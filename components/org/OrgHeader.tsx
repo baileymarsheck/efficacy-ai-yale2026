@@ -1,4 +1,4 @@
-import { FileText } from 'lucide-react'
+import { FileText, Globe, Users } from 'lucide-react'
 import { Organization } from '@/lib/types'
 
 interface OrgHeaderProps {
@@ -31,6 +31,18 @@ export default function OrgHeader({ org }: OrgHeaderProps) {
         <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
           EIN: {org.ein}
         </span>
+        {org.lmicBased && (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-700 text-sm font-medium rounded-full border border-teal-200">
+            <Globe className="w-3.5 h-3.5" />
+            LMIC-Based
+          </span>
+        )}
+        {org.communityLed && (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-700 text-sm font-medium rounded-full border border-purple-200">
+            <Users className="w-3.5 h-3.5" />
+            Community-Led
+          </span>
+        )}
       </div>
     </div>
   )

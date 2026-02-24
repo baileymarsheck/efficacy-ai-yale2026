@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, X, Search, GitCompare, Shield, CheckCircle, AlertCircle, FileText } from 'lucide-react'
+import { ArrowLeft, Plus, X, Search, GitCompare, Shield, CheckCircle, AlertCircle, FileText, Globe, Users } from 'lucide-react'
 import { getAllOrganizations, getOrganization } from '@/data/mockOrgs'
 import { Organization } from '@/lib/types'
 
@@ -362,6 +362,57 @@ export default function ComparePage() {
                   <td className="text-sm font-medium text-gray-600 px-6 py-4">Headquarters</td>
                   {selectedOrgs.map(org => (
                     <td key={org.slug} className="text-sm text-gray-900 px-6 py-4">{org.location}</td>
+                  ))}
+                </tr>
+
+                {/* Community Indicators Section Header */}
+                <tr className="bg-teal-50/50">
+                  <td colSpan={selectedOrgs.length + 1} className="px-6 py-3">
+                    <span className="text-sm font-semibold text-teal-700">Community Indicators</span>
+                  </td>
+                </tr>
+
+                {/* LMIC-Based */}
+                <tr className="hover:bg-gray-50">
+                  <td className="text-sm font-medium text-gray-600 px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-teal-500" />
+                      LMIC-Based
+                    </div>
+                  </td>
+                  {selectedOrgs.map(org => (
+                    <td key={org.slug} className="px-6 py-4">
+                      {org.lmicBased ? (
+                        <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-teal-50 text-teal-700 text-xs font-medium rounded-full border border-teal-200">
+                          <Globe className="w-3 h-3" />
+                          LMIC-Based
+                        </span>
+                      ) : (
+                        <span className="text-sm text-gray-400">—</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+
+                {/* Community-Led */}
+                <tr className="hover:bg-gray-50">
+                  <td className="text-sm font-medium text-gray-600 px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-purple-500" />
+                      Community-Led
+                    </div>
+                  </td>
+                  {selectedOrgs.map(org => (
+                    <td key={org.slug} className="px-6 py-4">
+                      {org.communityLed ? (
+                        <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-full border border-purple-200">
+                          <Users className="w-3 h-3" />
+                          Community-Led
+                        </span>
+                      ) : (
+                        <span className="text-sm text-gray-400">—</span>
+                      )}
+                    </td>
                   ))}
                 </tr>
               </tbody>

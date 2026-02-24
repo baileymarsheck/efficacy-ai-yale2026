@@ -11,6 +11,8 @@ export interface Organization {
   employees: number
   ceo: string
   website: string
+  lmicBased?: boolean
+  communityLed?: boolean
   ratings: {
     charityWatch: string
     charityNavigator: number

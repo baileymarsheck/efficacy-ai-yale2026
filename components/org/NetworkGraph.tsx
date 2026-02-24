@@ -12,6 +12,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { Organization, SimilarOrg } from '@/lib/types'
+import { getOrganization } from '@/data/mockOrgs'
 
 interface NetworkGraphProps {
   org: Organization
@@ -22,6 +23,11 @@ function createNodes(org: Organization): Node[] {
   const centerY = 200
   const radius = 150
 
+  // Build center node badge indicators
+  const centerBadges = []
+  if (org.lmicBased) centerBadges.push({ label: 'LMIC', color: '#0D9488' })
+  if (org.communityLed) centerBadges.push({ label: 'CL', color: '#9333EA' })
+
   const nodes: Node[] = [
     {
       id: 'center',
@@ -30,7 +36,16 @@ function createNodes(org: Organization): Node[] {
         label: (
           <div className="text-center">
             <div className="font-semibold text-sm">{org.name}</div>
-            <div className="text-xs text-gray-500">{org.budget}</div>
+            <div className="text-xs text-gray-200">{org.budget}</div>
+            {centerBadges.length > 0 && (
+              <div className="flex justify-center gap-1 mt-1">
+                {centerBadges.map(b => (
+                  <span key={b.label} style={{ background: b.color, color: 'white', fontSize: 9, padding: '1px 4px', borderRadius: 4, fontWeight: 700 }}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         ),
       },
@@ -56,6 +71,11 @@ function createNodes(org: Organization): Node[] {
 
     const borderColor = similarOrg.evidenceBacked ? '#22C55E' : '#F59E0B'
 
+    const fullOrg = getOrganization(similarOrg.slug)
+    const badges = []
+    if (fullOrg?.lmicBased) badges.push({ label: 'LMIC', color: '#0D9488' })
+    if (fullOrg?.communityLed) badges.push({ label: 'CL', color: '#9333EA' })
+
     nodes.push({
       id: similarOrg.slug,
       position: { x, y },
@@ -67,6 +87,15 @@ function createNodes(org: Organization): Node[] {
             <div className="text-xs text-gray-400">{similarOrg.budget}</div>
             {similarOrg.evidenceBacked && (
               <div className="text-xs text-green-600 mt-1">✓</div>
+            )}
+            {badges.length > 0 && (
+              <div className="flex justify-center gap-1 mt-1">
+                {badges.map(b => (
+                  <span key={b.label} style={{ background: b.color, color: 'white', fontSize: 9, padding: '1px 4px', borderRadius: 4, fontWeight: 700 }}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
             )}
           </div>
         ),
@@ -125,22 +154,22 @@ export default function NetworkGraph({ org }: NetworkGraphProps) {
       </ReactFlow>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 py-3 border-t border-gray-100">
+      <div className="flex items-center justify-center flex-wrap gap-4 py-3 border-t border-gray-100">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-500" />
-          <span className="text-xs text-gray-600">Water, Sanitation & Hygiene (WASH)</span>
+          <div className="w-4 h-4 rounded-full border-2 border-green-500 bg-white" />
+          <span className="text-xs text-gray-600">Evidence-backed</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded-full border-2 border-amber-500 bg-white" />
-          <span className="text-xs text-gray-600">WASH</span>
+          <span className="text-xs text-gray-600">Limited evidence</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full border-2 border-green-500 bg-white" />
-          <span className="text-xs text-gray-600">Global Health / WASH</span>
+          <span style={{ background: '#0D9488', color: 'white', fontSize: 9, padding: '1px 5px', borderRadius: 4, fontWeight: 700 }}>LMIC</span>
+          <span className="text-xs text-gray-600">LMIC-Based</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-green-600 text-sm">✓</span>
-          <span className="text-xs text-gray-600">Evidence-backed</span>
+          <span style={{ background: '#9333EA', color: 'white', fontSize: 9, padding: '1px 5px', borderRadius: 4, fontWeight: 700 }}>CL</span>
+          <span className="text-xs text-gray-600">Community-Led</span>
         </div>
       </div>
     </div>

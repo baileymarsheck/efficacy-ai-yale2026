@@ -1,17 +1,20 @@
-import { BarChart3, Shield } from 'lucide-react'
+import { BarChart3, Shield, Globe, Users } from 'lucide-react'
 import Link from 'next/link'
 import { SimilarOrg } from '@/lib/types'
+import { getOrganization } from '@/data/mockOrgs'
 
 interface SimilarOrgCardProps {
   org: SimilarOrg
 }
 
 export default function SimilarOrgCard({ org }: SimilarOrgCardProps) {
+  const fullOrg = getOrganization(org.slug)
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
       <div className="flex justify-between items-start mb-3">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Link href={`/org/${org.slug}`} className="text-lg font-semibold text-gray-900 hover:text-gold-500">
               {org.name}
             </Link>
@@ -19,6 +22,18 @@ export default function SimilarOrgCard({ org }: SimilarOrgCardProps) {
               <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 text-xs font-medium rounded-full">
                 <Shield className="w-3 h-3" />
                 Evidence-backed
+              </span>
+            )}
+            {fullOrg?.lmicBased && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-50 text-teal-700 text-xs font-medium rounded-full border border-teal-200">
+                <Globe className="w-3 h-3" />
+                LMIC-Based
+              </span>
+            )}
+            {fullOrg?.communityLed && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-full border border-purple-200">
+                <Users className="w-3 h-3" />
+                Community-Led
               </span>
             )}
           </div>

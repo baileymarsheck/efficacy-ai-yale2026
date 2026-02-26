@@ -1,13 +1,19 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Plus, X, Search, GitCompare, Shield, CheckCircle, AlertCircle, FileText, Globe, Users } from 'lucide-react'
 import { getAllOrganizations, getOrganization } from '@/data/mockOrgs'
 import { Organization } from '@/lib/types'
 
-export default function ComparePage() {
-  const [selectedSlugs, setSelectedSlugs] = useState<string[]>([])
+function CompareContent() {
+  const searchParams = useSearchParams()
+  const [selectedSlugs, setSelectedSlugs] = useState<string[]>(() => {
+    const org = searchParams.get('org')
+    if (!org) return []
+    return org.split(',').filter(Boolean)
+  })
   const [searchQuery, setSearchQuery] = useState('')
   const [showSearch, setShowSearch] = useState(false)
 
@@ -432,5 +438,13 @@ export default function ComparePage() {
         </div>
       )}
     </main>
+  )
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense>
+      <CompareContent />
+    </Suspense>
   )
 }

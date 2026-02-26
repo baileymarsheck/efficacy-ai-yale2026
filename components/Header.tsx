@@ -37,6 +37,12 @@ export default function Header() {
               Methodology
             </Link>
             <Link
+              href="/explore"
+              className="text-gray-600 hover:text-gray-900 text-sm font-medium"
+            >
+              Explore
+            </Link>
+            <Link
               href="/compare"
               className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm"
             >

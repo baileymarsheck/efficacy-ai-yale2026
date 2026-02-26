@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   ReactFlow,
   Node,
@@ -21,7 +22,7 @@ interface NetworkGraphProps {
 function createNodes(org: Organization): Node[] {
   const centerX = 250
   const centerY = 200
-  const radius = 150
+  const radius = 170
 
   // Build center node badge indicators
   const centerBadges = []
@@ -81,17 +82,16 @@ function createNodes(org: Organization): Node[] {
       position: { x, y },
       data: {
         label: (
-          <div className="text-center">
-            <div className="font-semibold text-xs">{similarOrg.name}</div>
-            <div className="text-xs text-gray-500">{similarOrg.sector}</div>
-            <div className="text-xs text-gray-400">{similarOrg.budget}</div>
+          <div className="text-center w-full" style={{ overflow: 'hidden', maxHeight: 72 }}>
+            <div className="font-semibold text-xs leading-tight truncate">{similarOrg.name}</div>
+            <div className="text-xs text-gray-400 mt-0.5 truncate">{similarOrg.budget}</div>
             {similarOrg.evidenceBacked && (
-              <div className="text-xs text-green-600 mt-1">✓</div>
+              <div className="text-xs text-green-600">✓</div>
             )}
             {badges.length > 0 && (
-              <div className="flex justify-center gap-1 mt-1">
+              <div className="flex justify-center gap-1 mt-0.5">
                 {badges.map(b => (
-                  <span key={b.label} style={{ background: b.color, color: 'white', fontSize: 9, padding: '1px 4px', borderRadius: 4, fontWeight: 700 }}>
+                  <span key={b.label} style={{ background: b.color, color: 'white', fontSize: 8, padding: '1px 3px', borderRadius: 3, fontWeight: 700 }}>
                     {b.label}
                   </span>
                 ))}
@@ -104,12 +104,14 @@ function createNodes(org: Organization): Node[] {
         background: 'white',
         border: `3px solid ${borderColor}`,
         borderRadius: '50%',
-        width: 100,
-        height: 100,
+        width: 110,
+        height: 110,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '8px',
+        padding: '10px',
+        overflow: 'hidden',
+        cursor: 'pointer',
       },
     })
   })
@@ -130,11 +132,18 @@ function createEdges(org: Organization): Edge[] {
 }
 
 export default function NetworkGraph({ org }: NetworkGraphProps) {
+  const router = useRouter()
   const initialNodes = createNodes(org)
   const initialEdges = createEdges(org)
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
+  const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
+    if (node.id !== 'center') {
+      router.push(`/org/${node.id}`)
+    }
+  }, [router])
 
   return (
     <div className="h-[400px] bg-white rounded-xl border border-gray-200">
@@ -143,6 +152,7 @@ export default function NetworkGraph({ org }: NetworkGraphProps) {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodeClick={onNodeClick}
         fitView
         attributionPosition="bottom-left"
         nodesDraggable={false}
